@@ -21,6 +21,7 @@ https://github.com/bitly/data_hacks
 """
 
 from __future__ import print_function
+import errno
 import sys
 import random
 from optparse import OptionParser
@@ -29,7 +30,13 @@ from decimal import Decimal
 def run(sample_rate, input_stream=sys.stdin, output=sys.stdout):
     for line in input_stream:
         if random.randint(1,100) <= sample_rate:
-            output.write(line)
+            try:
+                output.write(line)
+            except IOError as e:
+                if e.errno == errno.EPIPE:
+                    return
+                else:
+                    raise
 
 def get_sample_rate(rate_string):
     """ return a rate as a percentage"""

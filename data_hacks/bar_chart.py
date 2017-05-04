@@ -91,6 +91,10 @@ def run(input_stream, options, output=sys.stdout):
         print(
             str_format % (key[:max_length], value, (value / scale) * options.dot, percentage),
             file=output)
+        try:
+            output.flush()
+        except IOError:
+            pass
 
 if __name__ == "__main__":
     parser = OptionParser()
