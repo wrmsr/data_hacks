@@ -122,7 +122,7 @@ def test_median():
     assert "4.50" == "%.2f" % median([4.0, 5, 2, 1, 9, 10])
 
 
-def histogram(stream, options):
+def histogram(stream, options, output=sys.stdout):
     """
     Loop over the stream and add each entry to the dataset, printing out at the
     end.
@@ -234,15 +234,17 @@ def histogram(stream, options):
         bucket_scale = int(max(bucket_counts) / 75)
 
     print("# NumSamples = %d; Min = %0.2f; Max = %0.2f" %
-          (samples, min_v, max_v))
+          (samples, min_v, max_v), file=output)
     if skipped:
         print("# %d value%s outside of min/max" %
-              (skipped, skipped > 1 and 's' or ''))
+              (skipped, skipped > 1 and 's' or ''), file=output)
     if options.mvsd:
         print("# Mean = %f; Variance = %f; SD = %f; Median %f" %
               (mvsd.mean(), mvsd.var(), mvsd.sd(),
-               median(accepted_data, key=lambda x: x.value)))
-    print("# each " + options.dot + " represents a count of %d" % bucket_scale)
+               median(accepted_data, key=lambda x: x.value)), file=output)
+    print(
+        "# each " + options.dot + " represents a count of %d" % bucket_scale,
+        file=output)
     bucket_min = min_v
     bucket_max = min_v
     percentage = ""
@@ -258,7 +260,7 @@ def histogram(stream, options):
             percentage = " (%0.2f%%)" % (100 * Decimal(bucket_count) /
                                          Decimal(samples))
         print(format_string % (bucket_min, bucket_max, bucket_count, options.dot *
-                               star_count, percentage))
+                               star_count, percentage), file=output)
 
 
 if __name__ == "__main__":

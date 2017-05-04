@@ -20,6 +20,7 @@ Generate an ascii bar chart for input data
 
 https://github.com/bitly/data_hacks
 """
+from __future__ import print_function
 import sys
 import math
 from collections import defaultdict
@@ -37,7 +38,7 @@ def load_stream(input_stream):
         if clean_line:
             yield clean_line
 
-def run(input_stream, options):
+def run(input_stream, options, output=sys.stdout):
     data = defaultdict(int)
     total = 0
     for row in input_stream:
@@ -56,7 +57,7 @@ def run(input_stream, options):
             total += 1
 
     if not data:
-        print("Error: no data")
+        print("Error: no data", file=output)
         sys.exit(1)
 
     max_length = max([len(key) for key in data.keys()])
@@ -66,7 +67,9 @@ def run(input_stream, options):
     scale = int(math.ceil(float(max_value) / value_characters))
     scale = max(1, scale)
 
-    print("# each " + options.dot + " represents a count of %d. total %d" % (scale, total))
+    print(
+        "# each " + options.dot + " represents a count of %d. total %d" % (scale, total),
+        file=output)
 
     if options.sort_values:
         data = [[value, key] for key, value in data.items()]
@@ -85,7 +88,9 @@ def run(input_stream, options):
     for value, key in data:
         if options.percentage:
             percentage = " (%0.2f%%)" % (100 * Decimal(value) / Decimal(total))
-        print(str_format % (key[:max_length], value, (value // scale) * options.dot, percentage))
+        print(
+            str_format % (key[:max_length], value, (value / scale) * options.dot, percentage),
+            file=output)
 
 if __name__ == "__main__":
     parser = OptionParser()

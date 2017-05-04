@@ -25,10 +25,10 @@ import sys
 import os
 from decimal import Decimal
 
-def run():
+def run(stream=sys.stdin, output=sys.stdout):
     count = 0
     data = {}
-    for line in sys.stdin:
+    for line in stream:
         line = line.strip()
         if not line:
             # skip empty lines (ie: newlines)
@@ -39,8 +39,8 @@ def run():
             data[t] = data.get(t, 0) + 1
         except:
             print("invalid line %r" % line, file=sys.stderr)
-    print(calc_95(data, count))
-        
+    print(calc_95(data, count), file=output)
+
 def calc_95(data, count):
     # find the time it took for x entry, where x is the threshold
     threshold = Decimal(count) * Decimal('.95')
