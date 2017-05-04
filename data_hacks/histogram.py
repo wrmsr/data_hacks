@@ -105,7 +105,7 @@ def median(values, key=None):
     if not key:
         key = None  # map and sort accept None as identity
     length = len(values)
-    if length % 2:
+    if length % 2 == 0:
         median_indeces = [length // 2]
     else:
         median_indeces = [length // 2 - 1, length // 2]
